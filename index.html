@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SHATIUM | Catálogo Stock</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #000000;
+            --text-light: #f5f5f7;
+            --text-muted-dark: #86868b;
+            --accent-silver: #e2e2e7; 
+            --silver-gradient: linear-gradient(135deg, #ffffff 0%, #c7c7cc 45%, #8e8e93 85%, #e5e5ea 100%);
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0; padding: 0; font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark); color: var(--text-light);
+            overflow-x: hidden; -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; margin: 0; font-weight: 600; letter-spacing: 0.02em; }
+        p { margin: 0; letter-spacing: 0.01em; }
+
+        .reveal { opacity: 0; transform: translateY(45px); transition: opacity 1.2s, transform 1.2s; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.15s; }
+        .delay-2 { transition-delay: 0.3s; }
+        .delay-3 { transition-delay: 0.45s; }
+
+        section { padding: 80px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        
+        .hero { min-height: 80vh; justify-content: center; padding-top: 60px; padding-bottom: 20px;}
+        .hero-brand-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%;}
+        
+        .logo-container { width: clamp(100px, 16vw, 150px); height: clamp(100px, 16vw, 150px); margin-bottom: 28px; display: flex; align-items: center; justify-content: center; }
+        .logo-container img { width: 100%; height: 100%; object-fit: contain; display: block; filter: drop-shadow(0 4px 15px rgba(255, 255, 255, 0.1)); }
+        .hero-divider { width: 45px; height: 1px; background: var(--silver-gradient); margin-bottom: 28px; opacity: 0.6; }
+        
+        .hero h1 { font-size: clamp(3rem, 8vw, 6.8rem); margin-bottom: 14px; letter-spacing: 0.08em; background: var(--silver-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero h2.slogan { font-family: 'Montserrat', sans-serif; font-weight: 300; font-size: clamp(0.9rem, 2.5vw, 1.5rem); color: var(--text-muted-dark); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 40px;}
+
+        .hero-menu-pill { display: flex; align-items: center; background: linear-gradient(135deg, #ffffff 0%, #d1d1d6 50%, #e2e2e7 100%); border-radius: 40px; padding: 4px; box-shadow: 0 15px 35px rgba(0,0,0,0.8); margin-bottom: 30px;}
+        .menu-btn { text-decoration: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 12px 28px; border-radius: 35px; transition: all 0.3s ease; border: none; background: transparent;}
+        .menu-btn.active { background: #050505; box-shadow: inset 0 0 15px rgba(255,255,255,0.05), 0 5px 15px rgba(0,0,0,0.6); border: 1px solid rgba(226,226,231,0.1); }
+        .menu-btn.active span { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.15rem; background: linear-gradient(to bottom, #ffffff 20%, #a1a1a6 50%, #e2e2e7 80%, #ffffff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 12px rgba(255, 255, 255, 0.2); letter-spacing: 0.05em; }
+        .menu-divider-group { display: flex; align-items: center; }
+        .menu-btn.normal { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; color: #1d1d1f; text-transform: uppercase; padding: 12px 20px; }
+        .menu-vert-line { width: 1px; height: 18px; background: rgba(0,0,0,0.3); }
+
+        .subtitle-catalogo { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: #fff; font-style: italic; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 15px; margin-top: 20px;}
+
+        .main-category-title { font-family: 'Playfair Display', serif; font-size: 3rem; color: #fff; margin: 40px 0 20px 0; font-weight: 600; text-align: center; }
+        .subcategory-title { font-family: 'Montserrat', sans-serif; font-size: 0.95rem; font-weight: 400; letter-spacing: 5px; text-transform: uppercase; color: var(--text-muted-dark); margin: 40px 0 40px 0; }
+
+        .showcase-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; width: 100%; max-width: 1200px; justify-items: center; margin-bottom: 40px; }
+        .flip-card { background-color: transparent; width: 100%; max-width: 500px; height: 680px; perspective: 1000px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
+        @media (hover: hover) and (pointer: fine) { .flip-card:hover .flip-card-inner { transform: rotateY(180deg); } }
+        .flip-card.is-flipped .flip-card-inner { transform: rotateY(180deg); }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 24px;
+            border: 1px solid rgba(226, 226, 231, 0.15); background: linear-gradient(135deg, #141416 0%, #0a0a0c 100%);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5); padding: 40px 30px; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .flip-card-back { transform: rotateY(180deg); background: linear-gradient(135deg, #0a0a0c 0%, #1a1a1d 100%); justify-content: flex-start; align-items: center; text-align: center; }
+
+        .card-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--accent-silver); margin-bottom: 25px; text-align: center; }
+        .card-front-content { display: flex; flex-direction: column; align-items: center; gap: 20px; height: 100%; width: 100%; }
+        .card-img-container { width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+        .card-img-container img { max-height: 200px; object-fit: contain; }
+        
+        .card-accords { display: flex; flex-direction: column; width: 100%; align-items: center; }
+        .accords-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted-dark); margin-bottom: 15px; text-align: center; font-family: 'Montserrat', sans-serif;}
+        .accord-bar { height: 22px; border-radius: 4px; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.3); padding: 0 10px; white-space: nowrap; overflow: hidden; font-family: 'Montserrat', sans-serif;}
+
+        .pyramid-level { margin-bottom: 12px; width: 100%; }
+        .pyramid-level h5 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin: 0 0 5px 0; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px; display: inline-block; font-family: 'Montserrat', sans-serif;}
+        .pyramid-level strong { color: var(--text-light); font-weight: 500; display: block; font-family: 'Playfair Display', serif; font-size: 0.95rem; line-height: 1.4; }
+        .flip-hint { font-size: 0.75rem; color: var(--text-muted-dark); font-style: italic; margin-top: auto; text-align: center; width: 100%; padding-top: 10px; font-family: 'Montserrat', sans-serif;}
+
+        .hexagon-chart-wrapper { width: 100%; margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(226, 226, 231, 0.2); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .hexagon-chart { width: 100%; max-width: 135px; aspect-ratio: 1/1; }
+
+        .price-section { width: 100%; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
+        .price-table-wrapper { background: #111; border-radius: 20px; padding: 40px; max-width: 600px; width: 100%; font-family: 'Montserrat', sans-serif; margin-bottom: 20px;}
+        .price-table-wrapper h2 { font-family: 'Playfair Display', serif; text-align: center; font-size: 2.2rem; margin-bottom: 30px; font-weight: 400; color: #fff; }
+        .price-table { width: 100%; border-collapse: collapse; text-align: center; }
+        .price-table th { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: #86868b; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); font-weight: 500; }
+        .price-table td { padding: 20px 0; font-size: 1.1rem; font-weight: 700; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .price-table tr:last-child td { border-bottom: none; padding-bottom: 0; }
+        .price-table td:first-child { text-align: left; color: #e2e2e7; font-weight: 500; font-size: 1rem;}
+
+        .info-box { background: #111; border-radius: 20px; padding: 30px 40px; max-width: 600px; width: 100%; text-align: center; margin-bottom: 40px; }
+        .info-box p { font-size: 1rem; line-height: 1.6; color: #e2e2e7; font-family: 'Playfair Display', serif; font-style: italic; margin: 0; font-weight: 300;}
+
+        .stock-proximamente { padding: 80px 20px; text-align: center; min-height: 50vh;}
+        .stock-proximamente h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #fff; margin-bottom: 15px; font-style: italic;}
+        .stock-proximamente p { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; color: #86868b; letter-spacing: 2px; text-transform: uppercase;}
+
+        @media (max-width: 600px) { 
+            .flip-card { height: 720px; } 
+            .hero-menu-pill { padding: 5px; }
+            .menu-btn { padding: 10px 15px; font-size: 0.7rem; }
+            .hero h1 { font-size: 2.8rem; letter-spacing: 2px; }
+            .price-table td { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero reveal active">
+        <div class="hero-brand-wrapper">
+            <div class="logo-container">
+                <img src="shatlogo.png" alt="Logotipo SHATIUM" onerror="this.onerror=null; this.src='shatlogo.jpg';">
+            </div>
+            <div class="hero-divider"></div>
+            <h1>SHATIUM</h1>
+            <h2 class="slogan">TU ESENCIA, ELEVADA A LA PERFECCIÓN</h2>
+            
+            <div class="hero-menu-pill">
+                <button class="menu-btn active" onclick="mostrarSeccion('essentials')"><span>ESSENTIALS</span></button>
+                <div class="menu-divider-group">
+                    <button class="menu-btn normal" onclick="mostrarSeccion('originals')">ORIGINALS</button>
+                    <span class="menu-vert-line"></span>
+                    <button class="menu-btn normal" onclick="mostrarSeccion('decants')">DECANTS</button>
+                </div>
+            </div>
+            <h2 class="subtitle-catalogo">Catálogo Stock</h2>
+        </div>
+    </section>
+
+    <div id="seccion-essentials">
+        <section class="reveal" style="padding-top: 0; padding-bottom: 0;">
+            <h2 class="main-category-title">Categoría Essentials</h2>
+            
+            <h3 class="subcategory-title">para hombre</h3>
+            <div class="showcase-container">
+
+                <div class="flip-card reveal delay-1">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Toy Boy - Moschino</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat1.jpg" alt="Toy Boy - Moschino"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #e60066; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Rosas</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #ff8da1; color: #000; text-shadow: none;">Florales</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #8b5a2b; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #e6e6fa; color: #000; text-shadow: none;">Almizclado</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #d2b48c; color: #000; text-shadow: none;">Especiado Suave</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #90ee90; color: #000; text-shadow: none;">Fresco Especiado</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #cd853f; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #66cdaa; color: #000; text-shadow: none;">Aromático</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #d2691e; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cálido Especiado</div>
+                                    <div class="accord-bar" style="width: 40%; background-color: #ff69b4; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Pimienta Rosa, Pera, Nuez Moscada, Elemí, Bergamota</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Rosa, Clavo de Olor, Magnolia, Lino</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Vetiver, Cachemira, Sándalo, Ámbar, Sylkolide</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="95" data-summer="60" data-fall="90" data-night="100" data-winter="80" data-spring="100"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-2">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Allure Homme Sport</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat2.jpg" alt="Allure Homme Sport"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #ffff00; color: #000; text-shadow: none;">Cítrico</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #66cdaa; color: #000; text-shadow: none;">Aromático</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #fffacd; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #f0f8ff; color: #000; text-shadow: none;">Aldehídico</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #4682b4; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Marino</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #ff69b4; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #90ee90; color: #000; text-shadow: none;">Fresco Especiado</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #e0ffff; color: #000; text-shadow: none;">Fresco</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #cd853f; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 40%; background-color: #faebd7; color: #000; text-shadow: none;">Atalcado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Naranja, Notas Marinas, Aldehídos, Mandarina Roja</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Pimienta, Neroli, Cedro</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Vainilla, Haba Tonka, Almizcle, Ámbar, Vetiver</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="100" data-summer="100" data-fall="60" data-night="50" data-winter="40" data-spring="90"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-3">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Sauvage - Dior</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat3.jpg" alt="Sauvage - Dior"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #88B04B; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Fresco Especiado</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #CD853F; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #FFFF66; color: #000; text-shadow: none;">Cítrico</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #66CDAA; color: #000; text-shadow: none;">Aromático</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #E6E6FA; color: #000; text-shadow: none;">Almizclado</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #8B5A2B; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #D8BFD8; color: #000; text-shadow: none;">Lavanda</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #A3E4D7; color: #000; text-shadow: none;">Herbal</div>
+                                    <div class="accord-bar" style="width: 40%; background-color: #E9967A; color: #000; text-shadow: none;">Cálido Especiado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Bergamota de Calabria, Pimienta</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Pimienta de Sichuan, Lavanda, Pimienta Rosa, Vetiver, Pachulí, Geranio, Elemí</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Ambroxan, Cedro, Ládano</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="99" data-summer="93" data-fall="92" data-night="90" data-winter="68" data-spring="100"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-1">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Acqua di Giò Profumo</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat4.jpg" alt="Acqua di Giò Profumo"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #3b82f6; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Marino</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #10b981; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Aromático</div>
+                                    <div class="accord-bar" style="width: 85%; background-color: #84cc16; color: #000; text-shadow: none;">Fresco Especiado</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #d97706; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #8b5cf6; color: #fff; text-shadow: none;">Ahumado</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #8B5A2B; color: #fff; text-shadow: none;">Amaderado</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #fef08a; color: #000; text-shadow: none;">Cítrico</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #a8a29e; color: #fff; text-shadow: none;">Balsámico</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #4ade80; color: #000; text-shadow: none;">Pachulí</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Notas marinas, Bergamota</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Romero, Salvia, Geranio</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Incienso, Pachulí</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="93" data-summer="100" data-fall="72" data-night="81" data-winter="36" data-spring="95"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-2">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Bleu L'Exclusif - Chanel</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat5.jpg" alt="Bleu L'Exclusif - Chanel"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #8B5A2B; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 95%; background-color: #d97706; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #faebd7; color: #000; text-shadow: none;">Atalcado</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #e6e6fa; color: #000; text-shadow: none;">Almizclado</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #d2b48c; color: #000; text-shadow: none;">Balsámico</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Notas exclusivas</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Ládano, Sándalo</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Ámbar, Notas Amaderadas</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="59" data-summer="28" data-fall="100" data-night="94" data-winter="100" data-spring="65"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-3">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">SWY Absolutely</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat6.jpg" alt="SWY Absolutely"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #fffacd; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #8B5A2B; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 85%; background-color: #d2b48c; color: #000; text-shadow: none;">Balsámico</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #991b1b; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ron</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #10b981; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Aromático</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #ea580c; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cálido Especiado</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #d8bfd8; color: #000; text-shadow: none;">Lavanda</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #ff69b4; color: #fff; text-shadow: none;">Dulce</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Ron, Elemí, Bergamota</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Lavanda, Davana</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Vainilla de Madagascar, Castaña, Cedro, Pachulí</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="33" data-summer="7" data-fall="83" data-night="84" data-winter="100" data-spring="18"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <h3 class="subcategory-title">para mujer</h3>
+            <div class="showcase-container">
+
+                <div class="flip-card reveal delay-1">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Meow - Katy Perry</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat7.jpg" alt="Meow - Katy Perry"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #FCF4A3; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 95%; background-color: #F0F2F8; color: #000; text-shadow: none;">Floral Blanco</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #FF684C; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Afrutados</div>
+                                    <div class="accord-bar" style="width: 85%; background-color: #F45763; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #EFE0D4; color: #000; text-shadow: none;">Atalcado</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #FCFA8E; color: #000; text-shadow: none;">Cítrico</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #C0EBEB; color: #000; text-shadow: none;">Fresco</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #A3DFE6; color: #000; text-shadow: none;">Acuático</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #D49D79; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #E8D7F0; color: #000; text-shadow: none;">Almizclado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Pera, Tangerina, Gardenia, Jazmín</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Madreselva, Flor del Naranjo, Lirio</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Vainilla, Ámbar, Almizcle, Sándalo</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="100" data-summer="60" data-fall="80" data-night="60" data-winter="70" data-spring="90"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-2">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Queen - Armaf</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat8.jpg" alt="Queen - Armaf"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #eaddcf; color: #000; text-shadow: none;">Atalcado</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #8b5a2b; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #e6ffe6; color: #000; text-shadow: none;">Nardos</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #f0f8ff; color: #000; text-shadow: none;">Floral Blanco</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #d2691e; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cálido Especiado</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #ff7f50; color: #000; text-shadow: none;">Afrutados</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #32cd32; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Verde</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #ff69b4; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #bc8f8f; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Animálico</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Nardos, Notas Verdes</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Higo, Especias</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Notas Atalcadas, Sándalo</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="90" data-summer="80" data-fall="80" data-night="70" data-winter="70" data-spring="100"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-3">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Live - JLo</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat9.jpg" alt="Live - JLo"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #dc143c; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #ff4500; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Afrutados</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #afeeee; color: #000; text-shadow: none;">Fresco</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #ffff00; color: #000; text-shadow: none;">Cítrico</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #deb887; color: #000; text-shadow: none;">Caramelo</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #ffb6c1; color: #000; text-shadow: none;">Florales</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #ffcc66; color: #000; text-shadow: none;">Tropical</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #faebd7; color: #000; text-shadow: none;">Atalcado</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #ffffe0; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 40%; background-color: #8b5a2b; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Piña, Limón Siciliano, Naranja Italiana</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Flor del Grosellero, Peonía, Violeta</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Caramelo, Sándalo, Vainilla, Haba Tonka</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="100" data-summer="100" data-fall="60" data-night="50" data-winter="40" data-spring="80"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-1">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">La Vie Est Belle Rose</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat10.jpg" alt="La Vie Est Belle Rose"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #FF007F; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Rosas</div>
+                                    <div class="accord-bar" style="width: 85%; background-color: #FFFF66; color: #000; text-shadow: none;">Cítrico</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #8B5A2B; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #E6E6FA; color: #000; text-shadow: none;">Almizclado</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #FAEBD7; color: #000; text-shadow: none;">Atalcado</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #CD853F; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #FFB6C1; color: #000; text-shadow: none;">Florales</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #D8BFD8; color: #000; text-shadow: none;">Iris</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #A09E94; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Terrosos</div>
+                                    <div class="accord-bar" style="width: 40%; background-color: #B3E5FC; color: #000; text-shadow: none;">Fresco Especiado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Bergamota, Naranja, Tallos verdes</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Rosa de Damasco, Rosa, Agua de rosas, Iris</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Ambroxan, Almizcle, Notas amaderadas, Sándalo, Musgo</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="100" data-summer="51" data-fall="83" data-night="63" data-winter="66" data-spring="96"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-2">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Black Opium - YSL</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat11.jpg" alt="Black Opium - YSL"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #FFFACD; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #5C4033; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Café</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #FF4040; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #F8F8FF; color: #000; text-shadow: none;">Floral Blanco</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #D2691E; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cálido Especiado</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #CDAA7D; color: #000; text-shadow: none;">Especiado Suave</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #8B5A2B; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #FF8C69; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Afrutados</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #DEB887; color: #000; text-shadow: none;">Balsámico</div>
+                                    <div class="accord-bar" style="width: 40%; background-color: #FAEBD7; color: #000; text-shadow: none;">Atalcado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Pera, Pimienta rosa, Flor de azahar del naranjo</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Café, Jazmín, Almendra amarga, Regaliz</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Vainilla, Pachulí, Madera de cachemira, Cedro</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="37" data-summer="15" data-fall="86" data-night="100" data-winter="100" data-spring="23"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-3">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Yes I Am Delicious</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat12.jpg" alt="Yes I Am Delicious"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #D2691E; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cálido Especiado</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #8B4513; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cacao</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #FF69B4; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #5C4033; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Chocolate</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #FFFF66; color: #000; text-shadow: none;">Cítrico</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #CD853F; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #F8F8FF; color: #000; text-shadow: none;">Floral Blanco</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #D2B48C; color: #000; text-shadow: none;">Nuez</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Vaina de cacao, Avellana, Cardamomo, Mandarina verde</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Flor de azahar, Naranja, Jazmín de la India</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Chocolate oscuro, Sándalo</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="81" data-summer="21" data-fall="100" data-night="64" data-winter="96" data-spring="38"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-1">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Olympéa Absolu - Rabanne</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat13.jpg" alt="Olympéa Absolu - Rabanne"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #FFFACD; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 85%; background-color: #F8F8FF; color: #000; text-shadow: none;">Floral Blanco</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #CD853F; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #FAEBD7; color: #000; text-shadow: none;">Atalcado</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #FF8C69; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Afrutados</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #FFB6C1; color: #000; text-shadow: none;">Dulce</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #CDAA7D; color: #000; text-shadow: none;">Animálico</div>
+                                    <div class="accord-bar" style="width: 40%; background-color: #FFFAF0; color: #000; text-shadow: none;">Lactónico</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Chabacano, Canela</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Jazmín, Jazmín sambac, Flor de azahar, Café</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Vainilla, Ámbar, Benjuí</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="66" data-summer="27" data-fall="100" data-night="97" data-winter="99" data-spring="50"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="price-section reveal" style="padding-top: 0; padding-bottom: 0;">
+            <div class="price-table-wrapper">
+                <h2>Essentials</h2>
+                <table class="price-table">
+                    <thead><tr><th>TAMAÑO</th><th>CLÁSICO</th><th>+20% ESENCIA</th></tr></thead>
+                    <tbody>
+                        <tr><td>30 ml</td><td>$13</td><td>$15</td></tr>
+                        <tr><td>50 ml</td><td>$17</td><td>$20</td></tr>
+                        <tr><td>100 ml</td><td>$25</td><td>$28</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="info-box reveal delay-1">
+                <p>Todos los perfumes son de la más alta calidad y tienen un dinamismo que te permite elegir en qué frasco, de nuestro stock disponible, quieres tu nuevo perfume SHATIUM.</p>
+            </div>
+        </section>
+
+        <section class="reveal" style="padding-top: 20px; padding-bottom: 0;">
+            <h2 class="main-category-title" style="margin-bottom: 0;">Categoría Essential+</h2>
+            <h3 class="subcategory-title">perfumería exclusiva & nicho</h3>
+            <div class="showcase-container">
+
+                <div class="flip-card reveal delay-1">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Erba Pura - Xerjoff</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat14.jpg" alt="Erba Pura - Xerjoff"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #ffff00; color: #000; text-shadow: none;">Cítrico</div>
+                                    <div class="accord-bar" style="width: 95%; background-color: #ff4500; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Afrutados</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #f45b69; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #e6e6fa; color: #000; text-shadow: none;">Almizclado</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #f5deb3; color: #000; text-shadow: none;">Atalcado</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #fffacd; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #cd853f; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #98fb98; color: #000; text-shadow: none;">Fresco Especiado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Naranja Siciliana, Bergamota, Limón Siciliano</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Frutas</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Almizcle Blanco, Vainilla, Ámbar</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="100" data-summer="100" data-fall="80" data-night="80" data-winter="60" data-spring="90"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-2">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Smoking Hot - Kilian</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat15.jpg" alt="Smoking Hot - Kilian"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #b8860b; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Tabaco</div>
+                                    <div class="accord-bar" style="width: 95%; background-color: #ff4500; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Afrutados</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #778899; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ahumado</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #f45b69; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #cd853f; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Canela</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #fffacd; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #d2691e; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cálido Especiado</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #b0e0e6; color: #000; text-shadow: none;">Fresco</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #3cb371; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Verde</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #e9967a; color: #000; text-shadow: none;">Especiado Suave</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Manzana, Humo, Canela</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Tabaco, Vainilla, Musgo</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Vainilla Bourbon, Regaliz, Orcanox, Iso E Super, Esclarea</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="30" data-summer="20" data-fall="90" data-night="100" data-winter="100" data-spring="40"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-3">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Arabians Tonka</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat16.jpg" alt="Arabians Tonka"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #dc143c; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 95%; background-color: #fffacd; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 85%; background-color: #cd853f; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #696969; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Madera de Oud</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #d2691e; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cálido Especiado</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #ff69b4; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Rosas</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #e6e6fa; color: #000; text-shadow: none;">Almizclado</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #b0c4de; color: #000; text-shadow: none;">Metálico</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #66cdaa; color: #000; text-shadow: none;">Aromático</div>
+                                    <div class="accord-bar" style="width: 40%; background-color: #f5deb3; color: #000; text-shadow: none;">Atalcado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Azafrán, Bergamota</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Madera de Oud, Rosa de Bulgaria</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Haba Tonka, Caña de Azúcar, Ámbar, Almizcle Blanco</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="40" data-summer="30" data-fall="90" data-night="100" data-winter="100" data-spring="50"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-1">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Ombré Leather</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat17.jpg" alt="Ombré Leather - Tom Ford"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #8b4513; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cuero</div>
+                                    <div class="accord-bar" style="width: 85%; background-color: #a0522d; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #e0ffff; color: #000; text-shadow: none;">Ozónico</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #cd853f; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Animálico</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #afeeee; color: #000; text-shadow: none;">Acuático</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #f8f8ff; color: #000; text-shadow: none;">Floral Blanco</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #deb887; color: #000; text-shadow: none;">Tabaco</div>
+                                    <div class="accord-bar" style="width: 40%; background-color: #a9a9a9; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ahumado</div>
+                                    <div class="accord-bar" style="width: 35%; background-color: #d8bfd8; color: #000; text-shadow: none;">Iris</div>
+                                    <div class="accord-bar" style="width: 30%; background-color: #faebd7; color: #000; text-shadow: none;">Atalcado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Hojas de Violeta, Cedro</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Jazmín Sambac, Raíz de Lirio</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Cuero, Notas Amaderadas, Tabaco</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="50" data-summer="30" data-fall="90" data-night="100" data-winter="100" data-spring="60"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-2">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Baccarat Rouge 540</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat18.jpg" alt="Baccarat Rouge 540"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #8b4513; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 95%; background-color: #d2691e; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #cd5c5c; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cálido Especiado</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #b0c4de; color: #000; text-shadow: none;">Metálico</div>
+                                    <div class="accord-bar" style="width: 45%; background-color: #98fb98; color: #000; text-shadow: none;">Fresco Especiado</div>
+                                    <div class="accord-bar" style="width: 40%; background-color: #66cdaa; color: #000; text-shadow: none;">Aromático</div>
+                                    <div class="accord-bar" style="width: 35%; background-color: #f8f8ff; color: #000; text-shadow: none;">Floral Blanco</div>
+                                    <div class="accord-bar" style="width: 30%; background-color: #cd853f; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Animálico</div>
+                                    <div class="accord-bar" style="width: 25%; background-color: #e0ffff; color: #000; text-shadow: none;">Fresco</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Azafrán, Jazmín</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Amberwood, Ámbar Gris, Hedione</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Resina de Abeto, Cedro, Ambroxan</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="90" data-summer="80" data-fall="100" data-night="100" data-winter="90" data-spring="100"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-3">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Tobacco Vanille</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat19.jpg" alt="Tobacco Vanille"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #fffacd; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #e11d48; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 85%; background-color: #b45309; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Tabaco</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #ea580c; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cálido Especiado</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #fb923c; color: #000; text-shadow: none;">Afrutados</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #8B5A2B; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #78350f; color: #fff; text-shadow: none;">Cacao</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #faebd7; color: #000; text-shadow: none;">Atalcado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Hojas de tabaco, notas especiadas</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Vainilla, cacao, haba tonka, flor del tabaco</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Frutas secas, notas amaderadas</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="35" data-summer="11" data-fall="82" data-night="86" data-winter="100" data-spring="17"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-1">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Absolu Aventus</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat20.jpg" alt="Absolu Aventus"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #fb923c; color: #000; text-shadow: none;">Afrutados</div>
+                                    <div class="accord-bar" style="width: 95%; background-color: #fef08a; color: #000; text-shadow: none;">Cítrico</div>
+                                    <div class="accord-bar" style="width: 85%; background-color: #10b981; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Aromático</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #ea580c; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cálido Especiado</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #e11d48; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #8B5A2B; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #84cc16; color: #000; text-shadow: none;">Fresco Especiado</div>
+                                    <div class="accord-bar" style="width: 55%; background-color: #a3e635; color: #000; text-shadow: none;">Fresco</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #78716c; color: #fff; text-shadow: none;">Terrosos</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Piña, grosellas negras, toronja, bergamota</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Cardamomo, canela, jengibre</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Vetiver, pachulí</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="90" data-summer="100" data-fall="100" data-night="100" data-winter="90" data-spring="100"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-2">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Delina Exclusif</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat21.jpg" alt="Delina Exclusif"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #e11d48; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Rosas</div>
+                                    <div class="accord-bar" style="width: 85%; background-color: #fb923c; color: #000; text-shadow: none;">Afrutados</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #fffacd; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #d97706; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 70%; background-color: #fcd34d; color: #000; text-shadow: none;">Tropical</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #6ee7b7; color: #000; text-shadow: none;">Fresco</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #f472b6; color: #fff; text-shadow: none;">Dulce</div>
+                                    <div class="accord-bar" style="width: 60%; background-color: #8B5A2B; color: #fff; text-shadow: none;">Amaderado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Litchi, Pera, Bergamota, Toronja</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Rosa turca, Madera de Oud, Incienso</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Vainilla, Ámbar, Notas Amaderadas, Vetiver</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="96" data-summer="56" data-fall="93" data-night="89" data-winter="93" data-spring="100"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-card reveal delay-3">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-title">Angels' Share</div>
+                            <div class="card-front-content">
+                                <div class="card-img-container"><img src="shat22.jpg" alt="Angels' Share"></div>
+                                <div class="card-accords">
+                                    <div class="accords-title">Acordes Principales</div>
+                                    <div class="accord-bar" style="width: 100%; background-color: #ea580c; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Cálido Especiado</div>
+                                    <div class="accord-bar" style="width: 95%; background-color: #8B5A2B; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Amaderado</div>
+                                    <div class="accord-bar" style="width: 90%; background-color: #e11d48; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Dulce</div>
+                                    <div class="accord-bar" style="width: 80%; background-color: #fffacd; color: #000; text-shadow: none;">Avainillado</div>
+                                    <div class="accord-bar" style="width: 75%; background-color: #b45309; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Canela</div>
+                                    <div class="accord-bar" style="width: 65%; background-color: #d97706; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">Ámbar</div>
+                                    <div class="accord-bar" style="width: 50%; background-color: #faebd7; color: #000; text-shadow: none;">Atalcado</div>
+                                </div>
+                            </div>
+                            <div class="flip-hint">(Toca para ver la Pirámide y Uso ↻)</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Anatomía del Perfume</div>
+                            <div class="pyramid-level"><h5>Notas de Salida</h5><strong>Cognac</strong></div>
+                            <div class="pyramid-level"><h5>Corazón</h5><strong>Canela, Haba Tonka, Roble, Hedione</strong></div>
+                            <div class="pyramid-level"><h5>Base</h5><strong>Vainilla, Praliné, Sándalo, Almendra garapiñada</strong></div>
+                            <div class="hexagon-chart-wrapper"><div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-silver); margin-bottom: 10px; font-family: 'Montserrat', sans-serif; border-bottom: 1px solid rgba(226, 226, 231, 0.2); padding-bottom: 3px;">Cuándo usarlo</div><div class="hexagon-chart" data-day="34" data-summer="10" data-fall="89" data-night="82" data-winter="100" data-spring="19"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        
+        <section class="price-section reveal" style="padding-top: 0; padding-bottom: 0;">
+            <div class="price-table-wrapper">
+                <h2>Essential Plus</h2>
+                <table class="price-table">
+                    <thead><tr><th>TAMAÑO</th><th>CLÁSICO</th><th>+20% ESENCIA</th></tr></thead>
+                    <tbody>
+                        <tr><td>30 ml</td><td>$14</td><td>$16</td></tr>
+                        <tr><td>50 ml</td><td>$18</td><td>$20</td></tr>
+                        <tr><td>100 ml</td><td>$27</td><td>$30</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="info-box reveal delay-1">
+                <p>Todos los perfumes son de la más alta calidad y tienen un dinamismo que te permite elegir en qué frasco, de nuestro stock disponible, quieres tu nuevo perfume SHATIUM.</p>
+            </div>
+        </section>
+
+        <!-- FLECHA DE INICIO QUE REEMPLAZA A LA TARJETA VIP -->
+        <section class="reveal" style="padding-top: 40px; padding-bottom: 80px;">
+            <a href="#" style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--accent-silver); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                <span style="font-size: 2.5rem; font-weight: 300; margin-bottom: 10px;">↑</span>
+                <span style="font-family: 'Montserrat', sans-serif; font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase;">Inicio</span>
+            </a>
+        </section>
+    </div>
+
+    <!-- SECCIÓN ORIGINALS MODIFICADA -->
+    <div id="seccion-originals" style="display: none;">
+        <section class="stock-proximamente reveal active">
+            <h2 class="main-category-title" style="margin-top: 0;">Categoría Originals</h2>
+            <h3 class="subcategory-title" style="margin-top: 10px;">perfumería árabe</h3>
+            
+            <div style="margin-top: 30px;">
+                <p style="color: #e2e2e7; font-size: 1.5rem; font-family: 'Playfair Display', serif; font-style: italic; max-width: 600px; margin: 0 auto 25px auto; line-height: 1.6;">
+                    Estar atentos a la página
+                </p>
+                <p style="color: #86868b; font-size: 1rem; font-family: 'Montserrat', sans-serif; max-width: 700px; margin: 0 auto; line-height: 1.8;">
+                    Próximamente vendrá el nuevo stock de perfumería original. Prepárate para descubrir lo mejor de la perfumería árabe, las fragancias exclusivas que están generando gran polémica y revolucionando el mercado con su increíble estela y calidad inigualable.
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <div id="seccion-decants" style="display: none;">
+        <section class="stock-proximamente reveal active">
+            <h2>Decants</h2>
+            <p>Stock Próximamente - Prepárate para el Black Friday</p>
+            <div style="margin-top: 40px;">
+                <p style="color: #e2e2e7; font-size: 1rem; font-family: 'Montserrat', sans-serif; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+                    Pronto podrás disfrutar de la perfumería original en formatos de 3 ml, 5 ml y 10 ml. Una oportunidad perfecta para armar tu armario olfativo sin límites.
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function mostrarSeccion(seccion) {
+            const btns = document.querySelectorAll('.hero-menu-pill .menu-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('active', 'normal');
+                btn.classList.add('normal');
+                btn.innerHTML = btn.textContent;
+                
+                if(btn.textContent.toLowerCase().includes(seccion)) {
+                    btn.classList.remove('normal');
+                    btn.classList.add('active');
+                    btn.innerHTML = `<span>${btn.textContent}</span>`;
+                }
+            });
+            document.getElementById('seccion-essentials').style.display = (seccion === 'essentials') ? 'block' : 'none';
+            document.getElementById('seccion-originals').style.display = (seccion === 'originals') ? 'block' : 'none';
+            document.getElementById('seccion-decants').style.display = (seccion === 'decants') ? 'block' : 'none';
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            drawHexagons();
+            const reveals = document.querySelectorAll('.reveal');
+            const revealOnScroll = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); } }); }, { threshold: 0.05, rootMargin: "0px 0px -40px 0px" });
+            reveals.forEach(reveal => revealOnScroll.observe(reveal));
+            document.querySelectorAll('.flip-card').forEach(card => { card.addEventListener('click', function(e) { if(e.target.tagName !== 'BUTTON' && !e.target.className.includes('sticker')) this.classList.toggle('is-flipped'); }); });
+        });
+
+        function drawHexagons() {
+            const charts = document.querySelectorAll('.hexagon-chart');
+            charts.forEach(chart => {
+                const d = chart.dataset;
+                const values = [
+                    parseFloat(d.day) || 0,
+                    parseFloat(d.summer) || 0,
+                    parseFloat(d.fall) || 0,
+                    parseFloat(d.night) || 0,
+                    parseFloat(d.winter) || 0,
+                    parseFloat(d.spring) || 0
+                ];
+                const angles = [0, 60, 120, 180, 240, 300];
+                let points = "";
+                let circles = "";
+                
+                values.forEach((val, i) => {
+                    const r = 40 * (val / 100);
+                    const angleRad = (angles[i] * Math.PI) / 180;
+                    const x = 60 + r * Math.sin(angleRad);
+                    const y = 60 - r * Math.cos(angleRad);
+                    points += `${x},${y} `;
+                    circles += `<circle cx="${x}" cy="${y}" r="1.5" fill="#fff" stroke="#60a5fa" stroke-width="0.5"/>`;
+                });
+                
+                const svg = `
+                <svg viewBox="0 0 120 120" style="width:100%; height:100%; overflow:visible; font-family:'Montserrat', sans-serif;">
+                    <polygon points="60,20 94.6,40 94.6,80 60,100 25.4,80 25.4,40" fill="none" stroke="rgba(226,226,231,0.15)" stroke-width="0.5"/>
+                    <polygon points="60,33.3 77.3,43.3 77.3,76.6 60,86.6 42.7,76.6 42.7,43.3" fill="none" stroke="rgba(226,226,231,0.1)" stroke-width="0.5"/>
+                    <polygon points="60,46.6 68.6,51.6 68.6,68.3 60,73.3 51.4,68.3 51.4,51.6" fill="none" stroke="rgba(226,226,231,0.1)" stroke-width="0.5"/>
+                    
+                    <line x1="60" y1="60" x2="60" y2="20" stroke="rgba(226,226,231,0.15)" stroke-width="0.5"/>
+                    <line x1="60" y1="60" x2="94.6" y2="40" stroke="rgba(226,226,231,0.15)" stroke-width="0.5"/>
+                    <line x1="60" y1="60" x2="94.6" y2="80" stroke="rgba(226,226,231,0.15)" stroke-width="0.5"/>
+                    <line x1="60" y1="60" x2="60" y2="100" stroke="rgba(226,226,231,0.15)" stroke-width="0.5"/>
+                    <line x1="60" y1="60" x2="25.4" y2="80" stroke="rgba(226,226,231,0.15)" stroke-width="0.5"/>
+                    <line x1="60" y1="60" x2="25.4" y2="40" stroke="rgba(226,226,231,0.15)" stroke-width="0.5"/>
+                    
+                    <polygon points="${points.trim()}" fill="rgba(96, 165, 250, 0.4)" stroke="#60a5fa" stroke-width="1.5"/>
+                    ${circles}
+
+                    <text x="60" y="9" font-size="8" text-anchor="middle">☀️</text>
+                    <text x="60" y="16" fill="#86868b" font-size="5" text-anchor="middle" font-weight="600">DÍA</text>
+                    
+                    <text x="104" y="38" font-size="8" text-anchor="middle">⛱️</text>
+                    <text x="104" y="45" fill="#86868b" font-size="5" text-anchor="middle" font-weight="600">VER</text>
+                    
+                    <text x="104" y="80" font-size="8" text-anchor="middle">🍂</text>
+                    <text x="104" y="87" fill="#86868b" font-size="5" text-anchor="middle" font-weight="600">OTO</text>
+                    
+                    <text x="60" y="108" font-size="8" text-anchor="middle">🌙</text>
+                    <text x="60" y="115" fill="#86868b" font-size="5" text-anchor="middle" font-weight="600">NOC</text>
+                    
+                    <text x="16" y="80" font-size="8" text-anchor="middle">❄️</text>
+                    <text x="16" y="87" fill="#86868b" font-size="5" text-anchor="middle" font-weight="600">INV</text>
+                    
+                    <text x="16" y="38" font-size="8" text-anchor="middle">🍃</text>
+                    <text x="16" y="45" fill="#86868b" font-size="5" text-anchor="middle" font-weight="600">PRI</text>
+                </svg>`;
+                chart.innerHTML = svg;
+            });
+        }
+    </script>
+</body>
+</html>
